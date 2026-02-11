@@ -2,10 +2,11 @@
 import { Service } from "@tsed/di";
 import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+import * as schema from '../db/schema.js'
 
 @Service()
 export class DrizzleService {
-    public db: NodePgDatabase<Record<string, never>>;
+    public db: NodePgDatabase<typeof schema>;
     private pool: Pool;
 
     $onInit() {
@@ -13,7 +14,7 @@ export class DrizzleService {
             connectionString: 'postgresql://postgres:password@localhost:5432/postgres',
         });
 
-        this.db = drizzle(this.pool);
+        this.db = drizzle(this.pool, { schema });
         console.log("Drizzle ORM connected to the database.");
     }
 
